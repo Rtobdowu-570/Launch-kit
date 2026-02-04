@@ -65,74 +65,151 @@ LaunchKit is a web application that transforms a simple one-sentence bio into a 
 4. WHEN country code is required, THE Domain_Manager SHALL auto-detect from user's location
 5. THE Domain_Manager SHALL store the contact ID for future domain operations
 
-### Requirement 5: DNS Zone Management
+- [ ] 4.1 Write property tests for domain management
+  - **Property 8: Domain Availability Check**
+  - **Property 9: Contact Form Validation**
+  - **Property 10: Contact ID Persistence**
+  - **Validates: Requirements 3.1, 4.2, 4.5**
 
-**User Story:** As a user, I want to manage DNS records for my domain, so that I can configure email services and other integrations.
+- [ ] 5. Implement Claude API Integration for Brand Generation
+  - Create server actions for Claude API communication
+  - Implement brand identity generation logic
+  - Add domain-friendly name validation
+  - Implement tagline word limit enforcement
+  - Add rate limiting and error handling
+  - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-#### Acceptance Criteria
+- [ ]* 5.1 Write property tests for brand generation
+  - **Property 4: Brand Generation Count**
+  - **Property 5: Brand Identity Completeness**
+  - **Property 6: Domain-Friendly Brand Names**
+  - **Property 7: Tagline Word Limit**
+  - **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
 
-1. WHEN a domain is registered, THE Domain_Manager SHALL retrieve the DNS zone information
-2. THE Domain_Manager SHALL display current DNS records in a table format showing type, name, and value
-3. WHEN a user adds a DNS record, THE Domain_Manager SHALL validate the record format before submission
-4. WHEN a user clicks "Use Gmail Settings", THE Domain_Manager SHALL automatically add MX and TXT records for Gmail
-5. WHEN DNS records are modified, THE Domain_Manager SHALL update them via Ola.CV API within 5 seconds
+- [ ] 6. Implement Brand Generator Component
+  - Create BrandGenerator component with AI integration
+  - Display 3 brand options with availability status
+  - Implement brand selection and customization UI
+  - Add regeneration functionality
+  - Include loading states and animations
+  - _Requirements: 2.1, 2.2, 3.2, 3.3_
 
-### Requirement 6: Site Generation and Deployment
+- [ ] 7. Checkpoint - Core Generation Flow
+  - Ensure bio input, brand generation, and domain checking work end-to-end
+  - Verify all property tests pass
+  - Ask the user if questions arise
 
-**User Story:** As a user, I want my website to be automatically generated and deployed, so that I have a live web presence immediately.
+- [ ] 8. Implement Contact Form Component
+  - Create ContactForm component with validation
+  - Add country code auto-detection
+  - Implement required field validation
+  - Connect to Ola.CV contact creation API
+  - Add form submission handling
+  - _Requirements: 4.1, 4.2, 4.4_
 
-#### Acceptance Criteria
+- [ ] 9. Implement DNS Management System
+  - Create DNS zone retrieval functionality
+  - Implement DNS records display component
+  - Add DNS record creation, update, and deletion
+  - Create Gmail preset functionality
+  - Add DNS record format validation
+  - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-1. WHEN a user clicks "Launch My Site", THE Site_Builder SHALL generate a website using the selected brand identity
-2. THE Site_Builder SHALL deploy the site to a CDN within 25 seconds
-3. WHEN deployment is complete, THE Site_Builder SHALL configure DNS to point to the deployed site
-4. THE Site_Builder SHALL send an email notification when the site is live
-5. WHEN deployment fails, THE Site_Builder SHALL retry automatically and notify the user of any persistent issues
+- [ ]* 9.1 Write property tests for DNS management
+  - **Property 11: DNS Record Validation**
+  - **Property 12: DNS Zone Retrieval**
+  - **Validates: Requirements 5.1, 5.3**
 
-### Requirement 7: User Dashboard
+- [ ] 10. Implement Site Builder and Template System
+  - Create site generation logic with 3 templates
+  - Implement template selection based on bio analysis
+  - Add template customization with brand colors
+  - Create site deployment functionality
+  - Add DNS configuration for deployed sites
+  - _Requirements: 6.1, 6.3, 9.1, 9.2, 9.3_
 
-**User Story:** As a user, I want to access a dashboard to manage my brand and services, so that I can update my web presence over time.
+- [ ]* 10.1 Write property tests for site generation
+  - **Property 13: Site Generation from Brand Identity**
+  - **Property 14: Template Selection**
+  - **Property 15: Template Customization**
+  - **Validates: Requirements 6.1, 9.1, 9.3**
 
-#### Acceptance Criteria
+- [ ] 11. Implement User Dashboard
+  - Create dashboard layout and navigation
+  - Implement brand identity editing functionality
+  - Add service link management (CRUD operations)
+  - Implement drag-and-drop reordering for services
+  - Add template switching functionality
+  - Enforce free user limits (3 service links)
+  - _Requirements: 7.1, 7.2, 7.3, 7.4, 8.4, 9.4_
 
-1. WHEN a user accesses their dashboard, THE User_Dashboard SHALL display their current brand identity and site status
-2. THE User_Dashboard SHALL allow editing of bio, colors, and service links
-3. WHEN service links are added, THE User_Dashboard SHALL validate URLs and display them with pricing information
-4. THE User_Dashboard SHALL limit free users to 3 service links maximum
-5. WHEN changes are saved, THE User_Dashboard SHALL update the live site within 30 seconds
+- [ ]* 11.1 Write property tests for dashboard functionality
+  - **Property 16: Service Link Validation**
+  - **Property 17: Free User Service Limit**
+  - **Property 18: Service Card Display**
+  - **Validates: Requirements 7.3, 7.4, 8.2**
 
-### Requirement 8: Payment Integration
+- [ ] 12. Implement Launch Flow Integration
+  - Create multi-step wizard component (LaunchFlow)
+  - Integrate all components into cohesive flow
+  - Add progress tracking and state management
+  - Implement launch success page with confetti
+  - Add email notification system
+  - _Requirements: 6.2, 6.4, 6.5_
 
-**User Story:** As a user, I want to add payment links for my services, so that I can monetize my web presence.
+- [ ] 13. Implement Security and Performance Features
+  - Add input sanitization across all forms
+  - Implement HTTPS enforcement
+  - Add rate limiting middleware
+  - Implement data encryption for sensitive information
+  - Add performance monitoring and optimization
+  - _Requirements: 10.2, 10.3, 10.4, 10.5_
 
-#### Acceptance Criteria
+- [ ]* 13.1 Write property tests for security features
+  - **Property 19: HTTPS Communication**
+  - **Property 20: Rate Limiting**
+  - **Validates: Requirements 10.3, 10.5**
 
-1. WHEN adding a service link, THE User_Dashboard SHALL accept external payment URLs (Paystack, Stripe)
-2. THE User_Dashboard SHALL display service cards with name, price, and emoji icon
-3. WHEN a service is marked as sold out, THE User_Dashboard SHALL display a "Sold Out" badge
-4. THE User_Dashboard SHALL allow drag-and-drop reordering of service links
-5. WHEN service links are clicked, THE LaunchKit_System SHALL track click-through analytics
+- [ ] 14. Implement Analytics and Service Management
+  - Add click-through tracking for service links
+  - Implement service card display with pricing
+  - Add sold-out badge functionality
+  - Create analytics dashboard
+  - _Requirements: 8.1, 8.2, 8.3, 8.5_
 
-### Requirement 9: Template System
+- [ ] 15. Landing Page and Marketing Site
+  - Create landing page with hero section
+  - Add animated value proposition section
+  - Implement "Start Now" CTA leading to launch flow
+  - Add responsive design across all screen sizes
+  - Include feature showcase and testimonials
+  - _Requirements: 9.5_
 
-**User Story:** As a user, I want my site to use an appropriate template based on my profession, so that my web presence matches my industry.
+- [ ]* 15.1 Write integration tests for complete user flow
+  - Test end-to-end user journey from bio to live site
+  - Verify email notifications and DNS propagation
+  - Test error handling and recovery scenarios
+  - _Requirements: Complete workflow_
 
-#### Acceptance Criteria
+- [ ] 16. Final Integration and Polish
+  - Integrate all components into complete application
+  - Add loading states and micro-animations
+  - Implement error boundaries and fallback UI
+  - Add accessibility features (ARIA labels, keyboard navigation)
+  - Optimize performance and bundle size
+  - _Requirements: All requirements integration_
 
-1. WHEN a brand identity is generated, THE Site_Builder SHALL select from 3 available templates (Minimal Card, Magazine Grid, Terminal Retro)
-2. THE Site_Builder SHALL analyze bio keywords to automatically select the most appropriate template
-3. WHEN a template is applied, THE Site_Builder SHALL customize it with the user's brand colors and content
-4. THE User_Dashboard SHALL allow template switching after initial deployment
-5. THE Site_Builder SHALL maintain responsive design across all screen sizes for each template
+- [ ] 17. Final Checkpoint - Complete System Test
+  - Run full test suite including all property tests
+  - Verify deployment pipeline works end-to-end
+  - Test with real Ola.CV sandbox environment
+  - Ensure all requirements are met and documented
+  - Ask the user if questions arise
 
-### Requirement 10: Security and Data Protection
+## Notes
 
-**User Story:** As a system administrator, I want to ensure user data is secure and API credentials are protected, so that the system maintains user trust and compliance.
-
-#### Acceptance Criteria
-
-1. THE LaunchKit_System SHALL store API tokens in environment variables only
-2. WHEN processing user input, THE LaunchKit_System SHALL sanitize all data to prevent XSS attacks
-3. THE LaunchKit_System SHALL use HTTPS for all API communications
-4. WHEN storing user data, THE LaunchKit_System SHALL encrypt sensitive information
-5. THE LaunchKit_System SHALL implement rate limiting to prevent API abuse
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Property tests validate universal correctness properties from the design document
+- Integration tests ensure end-to-end functionality works correctly
+- Checkpoints provide opportunities for user feedback and course correction
