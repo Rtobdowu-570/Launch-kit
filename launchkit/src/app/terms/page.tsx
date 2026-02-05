@@ -1,0 +1,15 @@
+
+export default function TermsPage() {
+  return (
+    <div className="min-h-screen bg-gray-100 py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-900">Terms of Service</h1>
+          <p className="mt-4 text-lg text-gray-600">
+            Please read our terms of service carefully.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,9 +1,12 @@
+
 "use server";
 
-import { ContactData, DomainAvailability, DomainRegistration, OlaContact, OlaDomain, OlaDNSZone, DNSRecord } from '@/types';
+import { ContactData, DomainAvailability, DomainRegistration, OlaContact, OlaDomain, OlaDNSZone, DNSRecord, BrandIdentity } from '@/types';
 
 const BASE_URL = process.env.OLA_API_BASE_URL || "https://developer.ola.cv/api/v1";
 const API_TOKEN = process.env.OLA_API_TOKEN;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
 
 // Exponential backoff configuration
 const RETRY_CONFIG = {
@@ -26,6 +29,17 @@ interface DomainCheckResponse {
   renewal_fee?: number;
   currency?: string;
 }
+
+interface GeminiResponse {
+  candidates: {
+    content: {
+      parts: {
+        text: string;
+      }[];
+    };
+  }[];
+}
+
 
 // Exponential backoff retry utility
 async function withRetry<T>(
@@ -142,6 +156,7 @@ export async function checkDomain(domain: string): Promise<ApiResponse<DomainAva
 
 // Contact management
 export async function createContact(contactData: ContactData): Promise<ApiResponse<OlaContact>> {
+  // TODO: Save contact to your database
   // Validate required fields (check for both missing and whitespace-only fields)
   const requiredFields = ['name', 'email', 'phone', 'address', 'city', 'postcode', 'country'];
   const missingFields = requiredFields.filter(field => {
@@ -195,6 +210,7 @@ export async function getContact(contactId: string): Promise<ApiResponse<OlaCont
 
 // Domain registration
 export async function registerDomain(domain: string, contactId: string): Promise<ApiResponse<DomainRegistration>> {
+  // TODO: Save the domain registration to your database and associate it with the user
   if (!domain || !contactId) {
     return { success: false, error: "Domain and contact ID required" };
   }
@@ -387,4 +403,76 @@ export async function addGmailPreset(zoneId: string): Promise<ApiResponse<DNSRec
 // Legacy function for backward compatibility
 export async function getDnsRecords(zoneId: string) {
   return listDNSRecords(zoneId);
+}
+
+// Gemini Brand Generation
+export async function generateBrandIdentities(bio: string, name: string): Promise<ApiResponse<BrandIdentity[]>> {
+    // Note: This function only generates brand identities. It does not save them.
+    // The selected brand should be saved in a separate step.
+    if (!GEMINI_API_KEY) {
+        return { success: false, error: "GEMINI_API_KEY not configured" };
+    }
+
+    if (!bio || !name) {
+        return { success: false, error: "Bio and name are required" };
+    }
+
+    const prompt = `
+        You are a world-class brand strategist. Given a person's bio and name, generate 3 brand identities that are memorable, domain-friendly, and culturally aware.
+        For each, provide a brand name (1-2 words, no special characters), a color palette (primary, accent, neutral hex codes), and a punchy tagline (max 10 words).
+        Avoid generic tech startup vibes. Be bold and specific.
+
+        User Bio: "${bio}"
+        User Name: "${name}"
+
+        Return as a JSON array of objects, where each object has the following structure: {brandName: string, colors: {primary: string, accent: string, neutral: string}, tagline: string}.
+    `;
+
+    try {
+        const response = await fetch(GEMINI_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Gemini API Error:", errorData);
+            return { success: false, error: "Failed to generate brand identities from Gemini API." };
+        }
+
+        const data: GeminiResponse = await response.json();
+        const text = data.candidates[0].content.parts[0].text;
+        
+        // Clean the text to extract the JSON array
+        const jsonText = text.substring(text.indexOf('['), text.lastIndexOf(']') + 1);
+        const brandIdentities: BrandIdentity[] = JSON.parse(jsonText);
+
+        // Validate the generated identities
+        const validIdentities = brandIdentities.filter(identity =>
+            isDomainFriendly(identity.brandName) && isTaglineValid(identity.tagline)
+        );
+
+        return { success: true, data: validIdentities };
+
+    } catch (error) {
+        console.error("Error calling Gemini API:", error);
+        return { success: false, error: "An error occurred while generating brand identities." };
+    }
+}
+
+function isDomainFriendly(name: string): boolean {
+    if (!name || typeof name !== 'string') return false;
+    // 1-2 words, no special characters
+    const words = name.split(' ');
+    if (words.length < 1 || words.length > 2) return false;
+    return /^[a-zA-Z0-9\s]+$/.test(name);
+}
+
+function isTaglineValid(tagline: string): boolean {
+    if (!tagline || typeof tagline !== 'string') return false;
+    // max 10 words
+    return tagline.split(' ').length <= 10;
 }

@@ -54,8 +54,8 @@ This implementation plan breaks down the LaunchKit MVP into discrete coding task
   - **Property 10: Contact ID Persistence**
   - **Validates: Requirements 3.1, 4.2, 4.5**
 
-- [ ] 5. Implement Claude API Integration for Brand Generation
-  - Create server actions for Claude API communication
+- [ ] 5. Implement Gemini API Integration for Brand Generation
+  - Create server actions for Gemini API communication
   - Implement brand identity generation logic
   - Add domain-friendly name validation
   - Implement tagline word limit enforcement
