@@ -54,11 +54,11 @@ const itemVariants = {
 
 export function Testimonials() {
   return (
-    <section className="py-24 md:py-32 bg-gradient-to-b from-blue-50/50 to-purple-50/50 relative overflow-hidden">
+    <section className="py-24 md:py-32 bg-black relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full blur-3xl opacity-5"
+          className="absolute -top-40 -right-40 w-80 h-80 bg-purple-600 rounded-full blur-3xl opacity-10"
           animate={{ x: [0, 50, 0], y: [0, 30, 0] }}
           transition={{
             duration: 10,
@@ -67,7 +67,7 @@ export function Testimonials() {
           }}
         />
         <motion.div
-          className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-300 rounded-full blur-3xl opacity-5"
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-600 rounded-full blur-3xl opacity-10"
           animate={{ x: [0, -50, 0], y: [0, -30, 0] }}
           transition={{
             duration: 12,
@@ -131,7 +131,7 @@ export function Testimonials() {
               whileHover={{ y: -8 }}
             >
               <motion.div
-                className="h-full p-8 bg-white/60 backdrop-blur-sm border border-purple-200/50 rounded-2xl hover:border-gradient-to/50 transition-all hover:shadow-large hover:bg-white/80 relative overflow-hidden"
+                className="h-full p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-white/30 transition-all hover:shadow-large hover:bg-white/10 relative overflow-hidden"
                 whileHover={{ boxShadow: "0 20px 50px rgba(124, 58, 237, 0.15)" }}
               >
                 {/* Animated gradient background on hover */}
@@ -177,7 +177,7 @@ export function Testimonials() {
                   </motion.p>
 
                   {/* Author */}
-                  <div className="flex items-center gap-4 pt-6 border-t border-purple-200/50">
+                  <div className="flex items-center gap-4 pt-6 border-t border-white/10">
                     <motion.div
                       className={`w-12 h-12 rounded-full bg-gradient-to-br ${testimonial.color} flex items-center justify-center text-white font-bold shadow-medium flex-shrink-0`}
                       whileHover={{ scale: 1.2 }}

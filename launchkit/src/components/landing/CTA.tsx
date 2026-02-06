@@ -14,11 +14,11 @@ export function CTA() {
   };
 
   return (
-    <section className="py-24 md:py-32 bg-gradient-to-br from-white via-purple-50 to-white relative overflow-hidden">
+    <section className="py-24 md:py-32 bg-black relative overflow-hidden">
       {/* Background animations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-0 right-20 w-96 h-96 bg-gradient-to-br from-blue-300 to-purple-300 rounded-full blur-3xl opacity-10"
+          className="absolute top-0 right-20 w-96 h-96 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full blur-3xl opacity-15"
           animate={{
             y: [0, 40, 0],
             x: [0, 20, 0],
@@ -30,7 +30,7 @@ export function CTA() {
           }}
         />
         <motion.div
-          className="absolute bottom-0 left-20 w-80 h-80 bg-gradient-to-tr from-pink-300 to-purple-300 rounded-full blur-3xl opacity-10"
+          className="absolute bottom-0 left-20 w-80 h-80 bg-gradient-to-tr from-pink-600 to-purple-600 rounded-full blur-3xl opacity-12"
           animate={{
             y: [0, -40, 0],
             x: [0, -20, 0],

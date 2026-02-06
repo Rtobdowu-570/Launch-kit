@@ -44,15 +44,15 @@ export function Hero() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-gradient-to-br from-white via-blue-50 to-purple-50">
+    <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden bg-black">
       {/* Animated background elements */}
       {isMouseMoved && (
         <>
-          {/* Primary gradient orb following mouse */}
+          {/* Primary gradient orb following mouse - Blue to Purple */}
           <motion.div
-            className="pointer-events-none fixed w-96 h-96 rounded-full blur-3xl opacity-20 mix-blend-multiply"
+            className="pointer-events-none fixed w-96 h-96 rounded-full blur-3xl opacity-30 mix-blend-screen"
             style={{
-              background: "radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(139, 92, 246, 0.4) 40%, transparent 70%)",
+              background: "radial-gradient(circle, rgba(59, 130, 246, 1) 0%, rgba(139, 92, 246, 0.6) 40%, transparent 70%)",
               left: 0,
               top: 0,
               zIndex: 1,
@@ -69,11 +69,11 @@ export function Hero() {
             }}
           />
 
-          {/* Secondary gradient orb with delay */}
+          {/* Secondary gradient orb with delay - Purple to Pink */}
           <motion.div
-            className="pointer-events-none fixed w-80 h-80 rounded-full blur-3xl opacity-15 mix-blend-screen"
+            className="pointer-events-none fixed w-80 h-80 rounded-full blur-3xl opacity-25 mix-blend-screen"
             style={{
-              background: "radial-gradient(circle, rgba(236, 72, 153, 0.6) 0%, rgba(168, 85, 247, 0.3) 40%, transparent 70%)",
+              background: "radial-gradient(circle, rgba(236, 72, 153, 0.8) 0%, rgba(168, 85, 247, 0.5) 40%, transparent 70%)",
               left: 0,
               top: 0,
               zIndex: 1,
@@ -91,11 +91,11 @@ export function Hero() {
             }}
           />
 
-          {/* Tertiary accent orb */}
+          {/* Tertiary accent orb - Pink */}
           <motion.div
-            className="pointer-events-none fixed w-72 h-72 rounded-full blur-3xl opacity-10 mix-blend-overlay"
+            className="pointer-events-none fixed w-72 h-72 rounded-full blur-3xl opacity-20 mix-blend-screen"
             style={{
-              background: "radial-gradient(circle, rgba(124, 58, 237, 0.5) 0%, rgba(236, 72, 153, 0.2) 40%, transparent 70%)",
+              background: "radial-gradient(circle, rgba(236, 72, 153, 0.7) 0%, rgba(124, 58, 237, 0.4) 40%, transparent 70%)",
               left: 0,
               top: 0,
               zIndex: 1,
@@ -115,9 +115,9 @@ export function Hero() {
         </>
       )}
 
-      {/* Fixed floating elements */}
+      {/* Fixed floating elements - more visible on dark bg */}
       <motion.div
-        className="pointer-events-none absolute top-20 right-10 w-32 h-32 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 opacity-5 blur-2xl"
+        className="pointer-events-none absolute top-20 right-10 w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 opacity-15 blur-2xl"
         animate={{
           y: [0, 20, 0],
           x: [0, 10, 0],
@@ -129,7 +129,7 @@ export function Hero() {
         }}
       />
       <motion.div
-        className="pointer-events-none absolute bottom-20 left-10 w-40 h-40 rounded-full bg-gradient-to-br from-pink-400 to-purple-300 opacity-5 blur-3xl"
+        className="pointer-events-none absolute bottom-20 left-10 w-40 h-40 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 opacity-12 blur-3xl"
         animate={{
           y: [0, -20, 0],
           x: [0, -10, 0],
@@ -150,7 +150,7 @@ export function Hero() {
         {/* Badge with staggered animation */}
         <motion.div
           variants={itemVariants}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-md border border-purple-200/50 rounded-full shadow-medium mb-8 hover:bg-white/80 transition-all duration-300"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-purple-500/50 rounded-full shadow-medium mb-8 hover:bg-white/20 transition-all duration-300"
         >
           <motion.span
             className="w-2 h-2 bg-gradient-to-r from-gradient-from to-gradient-to rounded-full"
@@ -218,7 +218,7 @@ export function Hero() {
           >
             <Link
               href="#features"
-              className="px-10 py-5 bg-white/40 backdrop-blur-sm text-text-primary text-lg font-semibold rounded-xl border border-purple-200/50 hover:bg-white/60 transition-all block text-center"
+              className="px-10 py-5 bg-white/5 backdrop-blur-sm text-text-primary text-lg font-semibold rounded-xl border border-white/20 hover:bg-white/15 hover:border-white/40 transition-all block text-center"
             >
               See How It Works
             </Link>

@@ -52,11 +52,11 @@ const itemVariants = {
 
 export function Features() {
   return (
-    <section id="features" className="py-24 md:py-32 bg-gradient-to-b from-white to-blue-50/50 relative overflow-hidden">
+    <section id="features" className="py-24 md:py-32 bg-black relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute top-20 right-0 w-96 h-96 bg-purple-200 rounded-full blur-3xl opacity-5"
+          className="absolute top-20 right-0 w-96 h-96 bg-purple-600 rounded-full blur-3xl opacity-10"
           animate={{
             y: [0, 30, 0],
           }}
@@ -67,7 +67,7 @@ export function Features() {
           }}
         />
         <motion.div
-          className="absolute bottom-0 left-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-5"
+          className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600 rounded-full blur-3xl opacity-10"
           animate={{
             y: [0, -30, 0],
           }}
@@ -133,7 +133,7 @@ export function Features() {
               className="group h-full"
               whileHover={{ y: -8 }}
             >
-              <div className="relative h-full p-8 bg-white/60 backdrop-blur-sm border border-purple-200/50 rounded-2xl hover:border-gradient-to/50 transition-all hover:shadow-large hover:bg-white/80">
+              <div className="relative h-full p-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl hover:border-white/30 transition-all hover:shadow-large hover:bg-white/10">
                 {/* Step number with enhanced styling */}
                 <motion.div
                   className={`absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br ${feature.gradient} rounded-xl flex items-center justify-center text-white font-bold shadow-medium`}
