@@ -18,7 +18,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isConfigured, setIsConfigured] = useState(true);
+  const [isConfigured, setIsConfigured] = useState(false);
 
   useEffect(() => {
     // Get initial session
@@ -31,15 +31,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         }
 
-        const { data: { session: initialSession } } = await supabase.auth.getSession();
-        setSession(initialSession);
+        const result = await supabase.auth.getSession();
+        const initialSession = result?.data?.session;
+        
+        setSession(initialSession || null);
         setUser(initialSession?.user ?? null);
+        setIsConfigured(true);
       } catch (error) {
         console.error("Error getting session:", error);
-        // If we get an error about Supabase not being configured, set the flag
-        if (error instanceof Error && error.message.includes('Supabase not configured')) {
-          setIsConfigured(false);
-        }
+        setIsConfigured(false);
       } finally {
         setLoading(false);
       }
@@ -47,29 +47,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     initializeAuth();
 
-    // Listen for auth changes
-    try {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (_event: any, currentSession: any) => {
-          setSession(currentSession);
-          setUser(currentSession?.user ?? null);
-          setLoading(false);
+    // Listen for auth changes only if configured
+    const setupListener = async () => {
+      try {
+        if (!supabase?.auth?.onAuthStateChange) {
+          return;
         }
-      );
 
-      // Cleanup subscription
-      return () => {
-        subscription?.unsubscribe();
-      };
-    } catch (error) {
-      console.error("Error setting up auth listener:", error);
-      setLoading(false);
-    }
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (_event: any, currentSession: any) => {
+            setSession(currentSession);
+            setUser(currentSession?.user ?? null);
+            setLoading(false);
+          }
+        );
+
+        // Cleanup subscription
+        return () => {
+          subscription?.unsubscribe();
+        };
+      } catch (error) {
+        console.error("Error setting up auth listener:", error);
+        setLoading(false);
+      }
+    };
+
+    const unsubscribe = setupListener();
+    return () => {
+      unsubscribe.then(fn => fn?.());
+    };
   }, []);
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      if (supabase?.auth?.signOut) {
+        await supabase.auth.signOut();
+      }
       setUser(null);
       setSession(null);
     } catch (error) {
