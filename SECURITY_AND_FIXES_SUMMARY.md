@@ -6,10 +6,6 @@
 
 **Severity:** CRITICAL
 
-**Issue:** The following sensitive credentials were exposed in the `.env.local` file:
-- Ola.CV API Token: `xIK4hnDiqM6xaoZYjmVWiiSJzaAuXfSjkR3GrDAQd59121dc`
-- Gemini API Key: `AIzaSyA9MkCinkRW_fPvBJVdShPrgxaaCLNE8SI`
-- Supabase URL and Keys (anon key and service role key)
 
 **Action Taken:**
 - ✅ Replaced all real API keys with placeholder values in `.env.local`
