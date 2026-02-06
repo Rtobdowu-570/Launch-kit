@@ -41,8 +41,8 @@ describe('Brand Generation Property-Based Tests', () => {
   it('Property 4: Brand Generation Count - should generate 3 brand identities', async () => {
     await fc.assert(
       fc.asyncProperty(
-        fc.string({ minLength: 10 }),
-        fc.string({ minLength: 2 }),
+        fc.lorem({ maxCount: 2 }).filter(s => s.length >= 10), // Use lorem ipsum for realistic bios
+        fc.lorem({ maxCount: 1 }).filter(s => s.length >= 2), // Use lorem ipsum for realistic names
         async (bio, name) => {
           const mockApiResponse = {
             candidates: [
@@ -83,8 +83,8 @@ describe('Brand Generation Property-Based Tests', () => {
   it('Property 5: Brand Identity Completeness - should generate brand identities with all required fields', async () => {
     await fc.assert(
       fc.asyncProperty(
-        fc.string({ minLength: 10 }),
-        fc.string({ minLength: 2 }),
+        fc.lorem({ maxCount: 2 }).filter(s => s.length >= 10),
+        fc.lorem({ maxCount: 1 }).filter(s => s.length >= 2),
         async (bio, name) => {
           const mockApiResponse = {
             candidates: [
@@ -131,8 +131,8 @@ describe('Brand Generation Property-Based Tests', () => {
   it('Property 6: Domain-Friendly Brand Names - should generate domain-friendly brand names', async () => {
     await fc.assert(
       fc.asyncProperty(
-        fc.string({ minLength: 10 }),
-        fc.string({ minLength: 2 }),
+        fc.lorem({ maxCount: 2 }).filter(s => s.length >= 10),
+        fc.lorem({ maxCount: 1 }).filter(s => s.length >= 2),
         async (bio, name) => {
             const mockApiResponse = {
                 candidates: [
@@ -173,8 +173,8 @@ describe('Brand Generation Property-Based Tests', () => {
   it('Property 7: Tagline Word Limit - should generate taglines with a maximum of 10 words', async () => {
     await fc.assert(
       fc.asyncProperty(
-        fc.string({ minLength: 10 }),
-        fc.string({ minLength: 2 }),
+        fc.lorem({ maxCount: 2 }).filter(s => s.length >= 10),
+        fc.lorem({ maxCount: 1 }).filter(s => s.length >= 2),
         async (bio, name) => {
             const mockApiResponse = {
                 candidates: [

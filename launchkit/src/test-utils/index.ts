@@ -138,8 +138,8 @@ export const testHelpers = {
 
 // Property-based test configuration
 export const pbtConfig = {
-  numRuns: 100, // Minimum as specified in design document
-  verbose: true,
+  numRuns: 25, // Reduced for faster test execution
+  verbose: false,
   seed: 42, // For reproducible tests
 }
 

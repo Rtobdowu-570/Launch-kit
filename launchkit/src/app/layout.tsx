@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({
   variable: "--font-body",
@@ -17,9 +19,22 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
-  title: "LaunchKit — Instant Brand Presence",
-  description: "From bio to brand in 60 seconds",
+  title: "LaunchKit — From Bio to Brand in 60 Seconds",
+  description: "Transform your one-sentence bio into a complete brand identity with a live website. AI-powered brand generation, instant domain registration, and automated deployment.",
+  keywords: ["brand builder", "website builder", "AI branding", "instant website", "domain registration", "personal brand"],
+  authors: [{ name: "LaunchKit" }],
+  openGraph: {
+    title: "LaunchKit — From Bio to Brand in 60 Seconds",
+    description: "Transform your one-sentence bio into a complete brand identity with a live website.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +47,9 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased font-sans`}
       >
-        {children}
+        <AuthProvider>
+          <ErrorBoundary>{children}</ErrorBoundary>
+        </AuthProvider>
       </body>
     </html>
   );

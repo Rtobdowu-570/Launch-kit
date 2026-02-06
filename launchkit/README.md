@@ -2,7 +2,7 @@
 
 **Tagline:** From bio to brand in 60 seconds
 
-## 🚀 Quick Start
+##  Quick Start
 
 1. **Install dependencies:**
    ```bash

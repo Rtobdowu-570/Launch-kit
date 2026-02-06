@@ -1,4 +1,4 @@
-import { supabase, supabaseAdmin } from './supabase'
+import { supabase } from './supabase'
 import type { Brand, Service, Deployment } from '@/types'
 import type { Database } from '@/types/database'
 
@@ -57,6 +57,33 @@ export function dbRowToDeployment(row: DeploymentRow): Deployment {
 
 // Brand operations
 export async function createBrand(brand: Omit<Brand, 'id' | 'createdAt' | 'updatedAt'>) {
+  // First, ensure the user exists in the public.users table
+  // Get the current user's email from auth
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (user) {
+    // Insert user if they don't exist (using the authenticated user's email)
+    const { error: userError } = await supabase
+      .from('users')
+      .insert({
+        id: brand.userId,
+        email: user.email || '',
+        subscription: 'free',
+        brand_limit: 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single()
+
+    // Ignore duplicate key errors (user already exists)
+    if (userError && userError.code !== '23505') {
+      console.error('Error creating user:', userError)
+      // Continue anyway - the trigger might have created it
+    }
+  }
+
+  // Now create the brand
   const { data, error } = await supabase
     .from('brands')
     .insert({
@@ -79,7 +106,7 @@ export async function createBrand(brand: Omit<Brand, 'id' | 'createdAt' | 'updat
   return dbRowToBrand(data)
 }
 
-export async function getBrandById(id: string) {
+export async function getBrandById(id: string, userId?: string) {
   const { data, error } = await supabase
     .from('brands')
     .select('*')
@@ -87,7 +114,17 @@ export async function getBrandById(id: string) {
     .single()
 
   if (error) throw error
-  return data ? dbRowToBrand(data) : null
+  if (!data) return null
+
+  // Verify ownership if userId is provided
+  if (userId && data.user_id !== userId) {
+    const ownershipError = new Error('Unauthorized: You do not own this brand') as Error & { code: string; status: number }
+    ownershipError.code = 'FORBIDDEN'
+    ownershipError.status = 403
+    throw ownershipError
+  }
+
+  return dbRowToBrand(data)
 }
 
 export async function getBrandByDomain(domain: string) {
@@ -102,18 +139,89 @@ export async function getBrandByDomain(domain: string) {
   return data ? dbRowToBrand(data) : null
 }
 
-export async function getUserBrands(userId: string) {
-  const { data, error } = await supabase
+export interface GetUserBrandsOptions {
+  status?: 'all' | 'live' | 'deploying' | 'failed' | 'registering' | 'draft'
+  search?: string
+  page?: number
+  pageSize?: number
+}
+
+export interface PaginatedBrands {
+  brands: Brand[]
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
+}
+
+export async function getUserBrands(userId: string, options?: GetUserBrandsOptions): Promise<Brand[] | PaginatedBrands> {
+  const {
+    status = 'all',
+    search = '',
+    page,
+    pageSize = 10
+  } = options || {}
+
+  let query = supabase
     .from('brands')
-    .select('*')
+    .select('*', { count: 'exact' })
     .eq('user_id', userId)
-    .order('created_at', { ascending: false })
+
+  // Apply status filter
+  if (status !== 'all') {
+    query = query.eq('status', status)
+  }
+
+  // Apply search filter (search by domain or name)
+  if (search && search.trim()) {
+    query = query.or(`domain.ilike.%${search.trim()}%,name.ilike.%${search.trim()}%`)
+  }
+
+  // Apply ordering
+  query = query.order('created_at', { ascending: false })
+
+  // If pagination is requested
+  if (page !== undefined && page >= 1) {
+    const from = (page - 1) * pageSize
+    const to = from + pageSize - 1
+    query = query.range(from, to)
+
+    const { data, error, count } = await query
+
+    if (error) throw error
+
+    const brands = data.map(dbRowToBrand)
+    const total = count || 0
+    const totalPages = Math.ceil(total / pageSize)
+
+    return {
+      brands,
+      total,
+      page,
+      pageSize,
+      totalPages
+    }
+  }
+
+  // Without pagination, return simple array
+  const { data, error } = await query
 
   if (error) throw error
   return data.map(dbRowToBrand)
 }
 
-export async function updateBrand(id: string, updates: Partial<Brand>) {
+export async function updateBrand(id: string, updates: Partial<Brand>, userId?: string) {
+  // First verify ownership if userId is provided
+  if (userId) {
+    const brand = await getBrandById(id, userId)
+    if (!brand) {
+      const notFoundError = new Error('Brand not found') as Error & { code: string; status: number }
+      notFoundError.code = 'NOT_FOUND'
+      notFoundError.status = 404
+      throw notFoundError
+    }
+  }
+
   const { data, error } = await supabase
     .from('brands')
     .update({
@@ -134,6 +242,26 @@ export async function updateBrand(id: string, updates: Partial<Brand>) {
 
   if (error) throw error
   return dbRowToBrand(data)
+}
+
+export async function deleteBrand(id: string, userId?: string) {
+  // First verify ownership if userId is provided
+  if (userId) {
+    const brand = await getBrandById(id, userId)
+    if (!brand) {
+      const notFoundError = new Error('Brand not found') as Error & { code: string; status: number }
+      notFoundError.code = 'NOT_FOUND'
+      notFoundError.status = 404
+      throw notFoundError
+    }
+  }
+
+  const { error } = await supabase
+    .from('brands')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw error
 }
 
 // Service operations

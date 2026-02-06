@@ -3,10 +3,10 @@
 
 import { ContactData, DomainAvailability, DomainRegistration, OlaContact, OlaDomain, OlaDNSZone, DNSRecord, BrandIdentity } from '@/types';
 
-const BASE_URL = process.env.OLA_API_BASE_URL || "https://developer.ola.cv/api/v1";
+const BASE_URL = process.env.OLA_API_BASE_URL?.replace(/\/$/, '') || "https://developer.ola.cv/api/v1";
 const API_TOKEN = process.env.OLA_API_TOKEN;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 // Exponential backoff configuration
 const RETRY_CONFIG = {
@@ -38,6 +38,16 @@ interface GeminiResponse {
       }[];
     };
   }[];
+}
+
+interface RawBrandIdentity {
+  brandName: string;
+  colors: {
+    primary: string;
+    accent: string;
+    neutral: string;
+  };
+  tagline: string;
 }
 
 
@@ -77,14 +87,27 @@ async function fetchOla<T = unknown>(endpoint: string, options: RequestInit = {}
     ...(options.headers || {}),
   } as HeadersInit;
 
+  const url = `${BASE_URL}${endpoint}`;
+  console.log('Ola.CV API Request:', {
+    url,
+    method: options.method || 'GET',
+    body: options.body
+  });
+
   try {
-    const response = await fetch(`${BASE_URL}${endpoint}`, {
+    const response = await fetch(url, {
       ...options,
       headers,
       cache: 'no-store' // Ensure fresh data
     });
 
     const data = await response.json();
+    
+    console.log('Ola.CV API Response:', {
+      status: response.status,
+      ok: response.ok,
+      data
+    });
     
     // Return standardized response structure
     return { 
@@ -177,22 +200,27 @@ export async function createContact(contactData: ContactData): Promise<ApiRespon
     return { success: false, error: "Invalid email format" };
   }
 
+  const requestBody = {
+    name: contactData.name.trim(),
+    email: contactData.email.trim(),
+    phone: contactData.phone.trim(),
+    organization: contactData.organization?.trim() || '',
+    address: contactData.address.trim(),
+    city: contactData.city.trim(),
+    state: contactData.state?.trim() || '',
+    postcode: contactData.postcode.trim(),
+    country: contactData.country.trim(),
+  };
+
+  console.log('Creating contact with request body:', requestBody);
+
   return withRetry(async () => {
     const response = await fetchOla<OlaContact>("/contacts", {
       method: "POST",
-      body: JSON.stringify({
-        name: contactData.name.trim(),
-        email: contactData.email.trim(),
-        phone: contactData.phone.trim(),
-        organization: contactData.organization?.trim() || '',
-        address: contactData.address.trim(),
-        city: contactData.city.trim(),
-        state: contactData.state?.trim() || '',
-        postcode: contactData.postcode.trim(),
-        country: contactData.country.trim(),
-      }),
+      body: JSON.stringify(requestBody),
     });
 
+    console.log('Create contact response:', response);
     return response;
   });
 }
@@ -413,8 +441,9 @@ export async function generateBrandIdentities(bio: string, name: string): Promis
         return { success: false, error: "GEMINI_API_KEY not configured" };
     }
 
-    if (!bio || !name) {
-        return { success: false, error: "Bio and name are required" };
+    // Validate that bio and name are not empty or whitespace-only
+    if (!bio || !name || bio.trim().length === 0 || name.trim().length === 0) {
+        return { success: false, error: "Bio and name are required and cannot be empty" };
     }
 
     const prompt = `
@@ -448,12 +477,29 @@ export async function generateBrandIdentities(bio: string, name: string): Promis
         
         // Clean the text to extract the JSON array
         const jsonText = text.substring(text.indexOf('['), text.lastIndexOf(']') + 1);
-        const brandIdentities: BrandIdentity[] = JSON.parse(jsonText);
+        const rawIdentities: RawBrandIdentity[] = JSON.parse(jsonText);
 
-        // Validate the generated identities
-        const validIdentities = brandIdentities.filter(identity =>
-            isDomainFriendly(identity.brandName) && isTaglineValid(identity.tagline)
-        );
+        // Validate and enrich the generated identities
+        const validIdentities: BrandIdentity[] = rawIdentities
+            .filter((identity: RawBrandIdentity) =>
+                isDomainFriendly(identity.brandName) && isTaglineValid(identity.tagline)
+            )
+            .map((identity: RawBrandIdentity, index: number) => {
+                // Convert brand name to domain-friendly format
+                const domainName = identity.brandName
+                    .toLowerCase()
+                    .replace(/\s+/g, '') // Remove spaces
+                    .replace(/[^a-z0-9]/g, ''); // Remove special characters
+                
+                return {
+                    id: `brand-${Date.now()}-${index}`,
+                    brandName: identity.brandName,
+                    domain: `${domainName}.cv`,
+                    colors: identity.colors,
+                    tagline: identity.tagline,
+                    available: true // Will be checked later if needed
+                };
+            });
 
         return { success: true, data: validIdentities };
 

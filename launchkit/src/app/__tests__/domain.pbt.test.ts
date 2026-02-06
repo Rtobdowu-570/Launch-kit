@@ -1,6 +1,5 @@
 import * as fc from 'fast-check';
 import { checkDomainAvailability, createContact, getContact } from '../actions';
-import { generators } from '@/test-utils';
 import { ContactData } from '@/types';
 
 // Mock fetch for testing

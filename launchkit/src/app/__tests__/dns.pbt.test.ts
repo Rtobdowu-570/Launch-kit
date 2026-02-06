@@ -46,7 +46,7 @@ describe('DNS Management Property-Based Tests', () => {
     await fc.assert(
       fc.asyncProperty(
         fc.string({ minLength: 5 }),
-        generators.dnsRecord(),
+        generators.dnsRecord,
         async (zoneId, record) => {
           // Test with a valid record
           mockFetch.mockResolvedValueOnce(createMockResponse({ data: record }));

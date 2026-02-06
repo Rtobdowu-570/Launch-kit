@@ -13,18 +13,33 @@ export interface Database {
         Row: {
           id: string
           email: string
+          subscription: 'free' | 'pro'
+          subscription_id: string | null
+          subscription_status: 'active' | 'canceled' | 'past_due' | null
+          brand_limit: number
+          stripe_customer_id: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           email: string
+          subscription?: 'free' | 'pro'
+          subscription_id?: string | null
+          subscription_status?: 'active' | 'canceled' | 'past_due' | null
+          brand_limit?: number
+          stripe_customer_id?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           email?: string
+          subscription?: 'free' | 'pro'
+          subscription_id?: string | null
+          subscription_status?: 'active' | 'canceled' | 'past_due' | null
+          brand_limit?: number
+          stripe_customer_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -43,6 +58,9 @@ export interface Database {
           ola_domain_id: string | null
           ola_contact_id: string | null
           ola_zone_id: string | null
+          deployment_url: string | null
+          error_message: string | null
+          last_deployed_at: string | null
           status: string
           created_at: string
           updated_at: string
@@ -59,6 +77,9 @@ export interface Database {
           ola_domain_id?: string | null
           ola_contact_id?: string | null
           ola_zone_id?: string | null
+          deployment_url?: string | null
+          error_message?: string | null
+          last_deployed_at?: string | null
           status?: string
           created_at?: string
           updated_at?: string
@@ -75,6 +96,9 @@ export interface Database {
           ola_domain_id?: string | null
           ola_contact_id?: string | null
           ola_zone_id?: string | null
+          deployment_url?: string | null
+          error_message?: string | null
+          last_deployed_at?: string | null
           status?: string
           created_at?: string
           updated_at?: string
@@ -143,6 +167,9 @@ export interface Database {
           deployment_url: string
           status: string
           build_log: string | null
+          retry_count: number
+          started_at: string | null
+          completed_at: string | null
           deployed_at: string | null
           created_at: string
         }
@@ -152,6 +179,9 @@ export interface Database {
           deployment_url: string
           status?: string
           build_log?: string | null
+          retry_count?: number
+          started_at?: string | null
+          completed_at?: string | null
           deployed_at?: string | null
           created_at?: string
         }
@@ -161,6 +191,9 @@ export interface Database {
           deployment_url?: string
           status?: string
           build_log?: string | null
+          retry_count?: number
+          started_at?: string | null
+          completed_at?: string | null
           deployed_at?: string | null
           created_at?: string
         }

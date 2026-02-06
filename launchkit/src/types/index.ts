@@ -57,7 +57,7 @@ export interface Brand {
   olaDomainId?: string;
   olaContactId?: string;
   olaZoneId?: string;
-  status: 'draft' | 'registering' | 'live' | 'failed';
+  status: 'draft' | 'registering' | 'deploying' | 'configuring_dns' | 'live' | 'failed';
   createdAt: string;
   updatedAt: string;
 }
