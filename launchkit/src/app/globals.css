@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand colors */
-  --brand-primary: #2563eb;
-  --brand-accent: #f59e0b;
-  --brand-neutral: #f3f4f6;
+  /* Brand colors - Modern minimal */
+  --brand-primary: #0f172a;
+  --brand-secondary: #7c3aed;
+  --brand-accent: #ec4899;
+  --brand-neutral: #f1f5f9;
 
   /* Semantic colors */
   --background: #ffffff;
-  --foreground: #111827;
-  --text-secondary: #6b7280;
-  --bg-surface: #f9fafb;
+  --foreground: #0f172a;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --bg-surface: #f8fafc;
+  --border-light: #e2e8f0;
+  
+  /* Gradient colors */
+  --gradient-from: #3b82f6;
+  --gradient-via: #8b5cf6;
+  --gradient-to: #ec4899;
+  
+  /* Shadows */
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-large: 0 12px 32px rgba(0, 0, 0, 0.12);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
   --color-brand-accent: var(--brand-accent);
   --color-brand-neutral: var(--brand-neutral);
+  --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-bg-surface: var(--bg-surface);
+  --color-border-light: var(--border-light);
+  --color-gradient-from: var(--gradient-from);
+  --color-gradient-via: var(--gradient-via);
+  --color-gradient-to: var(--gradient-to);
   
   --font-display: var(--font-display);
   --font-body: var(--font-body);
@@ -31,11 +50,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --brand-neutral: #1f2937;
-    --bg-surface: #111827;
-    --text-secondary: #9ca3af;
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --brand-neutral: #1e293b;
+    --bg-surface: #1e293b;
+    --border-light: #334155;
   }
 }
 
@@ -43,8 +64,59 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body);
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brand-secondary);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-primary);
+}
+
+/* Text size classes */
+@layer utilities {
+  .text-display-xl {
+    @apply text-5xl md:text-7xl;
+  }
+  
+  .text-display-lg {
+    @apply text-4xl md:text-5xl;
+  }
+  
+  .text-display-md {
+    @apply text-3xl md:text-4xl;
+  }
+  
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  
+  .shadow-medium {
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .shadow-large {
+    box-shadow: var(--shadow-large);
+  }
 }
